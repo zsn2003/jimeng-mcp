@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jimeng-local-mcp"
-version = "0.1.0"
-description = "Local stdio MCP for Jimeng: user-owned login, persistent jobs, and media workflows"
+version = "0.1.1"
+description = "Agent-friendly Jimeng MCP: less command juggling, more creating"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"

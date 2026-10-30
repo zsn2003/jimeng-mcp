@@ -10,7 +10,7 @@ from .config import configure_environment, read_settings, save_settings
 
 
 def parser():
-    result = argparse.ArgumentParser(prog='jimeng-mcp', description='Local Jimeng MCP. Each user authorizes their own account.')
+    result = argparse.ArgumentParser(prog='jimeng-mcp', description='即梦 MCP：你负责脑洞，Agent 负责开工。')
     result.add_argument('--version', action='version', version=__version__)
     result.add_argument('--data-dir', help='Private local directory; defaults to this OS user\'s application data directory')
     commands = result.add_subparsers(dest='command')

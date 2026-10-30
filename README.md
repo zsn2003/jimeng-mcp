@@ -1,63 +1,98 @@
-# 即梦 MCP · 本地版
+# 即梦 MCP
 
-让本地 agent 使用你自己的即梦账号，操作画布、图片、视频、音频、主体、剧本和故事板。基于官方 CLI 与固定网页接口适配，**这是社区项目，不是即梦官方 MCP**。
+**你负责脑洞，Agent 负责开工。**
 
-- 标准 **stdio MCP**：客户端启动本地进程，不开 HTTP 端口、不需要公共服务器。
-- **10 个 MCP 工具、122 项固定业务动作**，通过 `action_schema` 查询参数。
-- 每位用户自行授权；任务数据库、恢复记录和导出文件留在本机。
-- 写操作默认 `dryRun:true`，生成积分额度默认 **0**；启用付费生成需要用户修改本地设置。
-- Python **3.12+**；支持 macOS、Linux，Windows 请在 **WSL2** 中运行。暂不支持原生 Windows。
+灵感来了，还得先翻半小时命令行？提示词已经够费脑子，参数说明书就交给 Agent 吧。
 
-## 安装
+即梦 MCP 把即梦的画布、图片、视频、音频，以及部分主体和短剧工作室能力，接到你常用的 AI Agent。连接后，你用日常语言交代需求，Agent 负责查参数、提交任务、跟踪进度和取回素材。
 
-安装需要 Python 3.12+ 和 Git。可使用独立工具环境：
+## 折腾这些，是为了少折腾
+
+从想法到成品，常常要在几套命令之间来回切换：找参数、查任务、记编号、下载文件。我们把这些琐事整理成一套 MCP 工具，让创作流程能在对话里接着往下走。
+
+- **少背命令，多想创意。** Agent 按需查参数，再调用工具。参数不用背成绕口令。
+- **一个入口，把流程接起来。** 画布操作、媒体生成、主体管理和故事板都有统一的调用方式，省去在几套 CLI 之间反复切换。
+- **任务有下落，进度有地方查。** 提交记录和队列保存在本机；对话断了，也能找回原任务继续查询。重试时复用原提交记录，减少重复开工。
+- **积分怎么花，你说了算。** 先预览操作，再正式执行；生成额度由你设置。灵感可以放飞，钱包先系好安全带。
+- **素材拿得到，后续接得上。** 已有受管素材可以下载、校验并导出到本机，方便交给下一步制作。
+- **用自己的账号，在自己的电脑开工。** 授权后直接连接本机 Agent，省去搭建公共 MCP 服务器这一关。
+
+目前提供 **10 个 MCP 工具、122 项业务动作**。具体功能和开发进度见 [功能清单](docs/features.md)。
+
+## 三步上手
+
+准备 **Python 3.12+、Git** 和一个支持 MCP 的 Agent。macOS、Linux 可以使用；Windows 请在 **WSL2** 中安装。
+
+### 1. 安装
+
+已安装 uv 时，可以直接运行下面的命令；也可以展开下方说明，从源码安装：
 
 ```sh
 uv tool install 'git+https://github.com/zsn2003/jimeng-mcp.git'
-jimeng-mcp --version
+jimeng-mcp install-cli all
 ```
 
-也可从源码安装，不需要 uv：
+第二条命令会下载两套官方 CLI，并自动校验文件。安装完可以运行 `jimeng-mcp doctor` 看看是否就绪。
+
+<details>
+<summary>习惯从源码安装？展开这里</summary>
 
 ```sh
 git clone https://github.com/zsn2003/jimeng-mcp.git
 cd jimeng-mcp
 python3 -m venv .venv
 .venv/bin/python -m pip install .
-.venv/bin/jimeng-mcp --version
+.venv/bin/jimeng-mcp install-cli all
 ```
 
-下面命令中的 `jimeng-mcp`，源码安装时可替换成 `.venv/bin/jimeng-mcp`。这个包目前通过 GitHub 安装，未声明已发布到 PyPI。
+后面的命令把 `jimeng-mcp` 换成 `.venv/bin/jimeng-mcp` 即可。
 
-## 首次授权
+</details>
 
-先安装官方依赖，再由用户自己打开授权网址：
+### 2. 登录即梦
+
+先连接画布与基础创作能力：
 
 ```sh
-jimeng-mcp install-cli all
 jimeng-mcp auth login canvas
-# 打开输出的官方授权网址，使用自己的即梦账号确认后：
-jimeng-mcp auth complete canvas
-
-# 多关键帧、官方会话与任务历史使用另一套官方 CLI 授权：
-jimeng-mcp auth login plugin
-jimeng-mcp auth complete plugin
-jimeng-mcp doctor --check-auth
 ```
 
-安装器只从官方 HTTPS 地址下载**固定版本并核对 SHA-256**，不执行下载的安装脚本，也不把官方二进制打包进本仓库。授权流程不会自动启动浏览器、代填密码或自动确认权限。设备凭据保存在本机私有目录，不要把凭据或 Cookie 发进聊天。
+终端会给出授权网址和验证码。打开网址完成授权，再回到终端运行：
 
-**两套 CLI OAuth 不等于网页工作室登录。** 画布和官方生成 CLI 授权后可使用对应动作；个人主体库、网页短剧工作室等动作还需要当前账号的独立网页会话。这部分是可选高级能力，使用本地 `auth import-web` 导入，详见 [授权与数据位置](docs/authentication.md)。未配置时会明确返回未授权，不会借用任何共享账号。
+```sh
+jimeng-mcp auth complete canvas
+```
 
-## 连接本地 agent
+需要多关键帧、创作会话和任务历史时，再连接创作 CLI：
 
-运行以下命令，得到与你的安装位置匹配的配置：
+```sh
+jimeng-mcp auth login plugin
+# 同样打开输出的网址，完成授权后运行：
+jimeng-mcp auth complete plugin
+```
+
+最后运行 `jimeng-mcp doctor --check-auth` 检查登录状态。个人主体库和部分网页工作室功能还有一个独立的网页登录入口，按需查看 [登录指南](docs/authentication.md#网页工作室)。
+
+### 3. 接上 Agent
+
+生成适合你安装位置的 MCP 配置：
 
 ```sh
 jimeng-mcp client-config
 ```
 
-将输出的 `mcpServers` 合并到支持 stdio MCP 的客户端配置。典型配置如下，`command` 应使用本机实际可执行文件路径：
+将输出加入 Agent 的 MCP 配置中。它使用 **stdio** 连接：Agent 在同一电脑、同一系统用户下启动这个工具。
+
+使用 Codex CLI 时，也可以直接添加：
+
+```sh
+codex mcp add jimeng -- /absolute/path/to/jimeng-mcp serve
+```
+
+把示例路径换成 `command -v jimeng-mcp` 的输出；源码安装则填写 `.venv/bin/jimeng-mcp` 的绝对路径。
+
+<details>
+<summary>通用 MCP 配置示例</summary>
 
 ```json
 {
@@ -70,81 +105,100 @@ jimeng-mcp client-config
 }
 ```
 
-使用 Codex CLI 时，可直接添加本地服务：
+连接需要客户端支持本地 stdio MCP。
+
+</details>
+
+## 接好以后，可以这样开口
+
+> 看看我的即梦账号状态，以及现在能用哪些功能。
+
+> 列出这个画布里的节点，帮我整理一下有哪些图片和视频。
+
+> 按这个提示词准备一张 16:9 海报，先给我看生成参数，确认后再提交。
+
+> 查一下刚才那个任务，完成后把可下载的素材保存下来。
+
+你描述目标，Agent 通过 MCP 操作即梦。自然语言理解由你连接的 Agent 完成。
+
+## 准备正式开工：设个积分额度
+
+刚安装时，生成额度为 **0**，写操作默认先预览。这样可以先把账号和流程跑通。
+
+准备生成时，设置单次操作的积分上限，例如：
 
 ```sh
-codex mcp add jimeng -- /absolute/path/to/jimeng-mcp serve
+jimeng-mcp config --max-credits 20
 ```
 
-将示例路径换成 `command -v jimeng-mcp` 的输出。源码安装则使用该仓库 `.venv/bin/jimeng-mcp` 的绝对路径。
+重启 Agent 中的 MCP 服务后生效，再让 Agent 正式执行。这里的 20 是**支持额度控制的单次操作上限**，实际积分和模型以即梦账号为准。
 
-客户端必须在安装了工具的同一电脑、同一 OS 用户下运行。仅支持远程 HTTP URL 的客户端不能直接连接此 stdio 版本。无需 API Key、MCP Bearer Token 或对外开放端口。
-
-可让 agent 执行：
-
-> 先查即梦 capabilities，再查 account.status 的 action_schema，提交只读状态查询并回读同一 job。不要生成媒体。
-
-使用顺序：`capabilities` → `action_schema` → `submit_job` → `get_job`。同一次请求重试保留原 `idempotencyKey` 和完整参数。
-
-## 生成额度与写入
-
-默认允许固定业务写入，但每个写动作仍默认 `dryRun:true`。真实修改或生成必须显式提供 `dryRun:false`；删除动作还要求对具体对象的永久删除确认。登录本身不会解除积分限制。
+<details>
+<summary>更多操作设置</summary>
 
 ```sh
-# 对支持报价/额度的动作设置单次最多 20 积分；不是月度累计预算
-jimeng-mcp config --max-credits 20
-
-# 可选：全局只读，连非计费的真实修改也阻止
+# 只查询，暂停真实修改
 jimeng-mcp config --read-only
+
+# 恢复写入能力
 jimeng-mcp config --allow-writes
 
-# 仅在用户愿意自行承担消费时：允许无法执行数字额度的网页/多帧动作
-jimeng-mcp config --max-credits unlimited
-
-# 可选：要求视频先做官方样片，普通模式需要本次明确授权声明
+# 视频流程优先做样片
 jimeng-mcp config --video-policy sample_first
+
+# 开放无法设置数字上限的网页、多关键帧等操作
+jimeng-mcp config --max-credits unlimited
 ```
 
-修改设置后重启 MCP 客户端中的服务进程。本地 `settings.json` 是积分与工作流策略的权威来源，启动器不会继承宿主 shell 的旧服务额度。`unlimited` 不代表无限免费，也不代替每次任务授权；积分和可用模型由用户的即梦账号决定。
+`unlimited` 会取消本工具的数字额度限制，实际调用仍消耗账号积分，请按自己的预算选择。
 
-## 工具
+写操作预览使用 `dryRun:true`，正式执行使用 `dryRun:false`；永久删除另需确认具体对象。设置保存在本机 `settings.json`，每次修改后重启 MCP 服务。
 
-| 工具 | 作用 |
-|---|---|
-| `capabilities` | 当前动作、配置与可用条件；不是重新验证所有登录 |
-| `studio_catalog` | 功能映射、限制和未接通项 |
-| `action_schema` | 查询单项动作的完整参数 |
-| `submit_job` / `submit_job_json` | 持久化提交；严格白名单与参数校验 |
-| `get_job` | 查询原任务与真实业务结果 |
-| `list_jobs` / `queue_summary` | 找回任务、查看队列 |
-| `cancel_job` | 仅取消尚未执行的排队任务 |
-| `artifact_manifest` | 校验已有受管素材并导出本地文件，返回 `localPath`、大小与 SHA-256 |
+</details>
 
-`COMPLETED` 只表示调用结束。还需检查 `operationOutcome`、生成资源终态和实际文件；dry-run 成功不代表已生成素材。超时、`partial`、`unknown` 沿原任务和上游对象核对，不能换一个 key 盲目重提。
+## 几个常见问题
 
-一个数据目录只允许一个服务进程。多个客户端同时使用会明确提示占用；先关闭原客户端，或为**独立用途**创建不同的 `--data-dir`。不要用新目录绕过未决任务的防重保护。
+**所有即梦功能都接好了吗？** 目前功能目录有 124 项，其中 108 项已有完整或部分接入，16 项仍待开发。[功能清单](docs/features.md)列出了当前进度。
 
-## 功能边界
+**登录一次就够了吗？** 画布 CLI、创作 CLI 和网页工作室分别管理登录。按使用的功能连接对应入口即可，详见 [登录指南](docs/authentication.md)。
 
-122 项动作不等于网页全部功能已实现。目录有 124 项功能，其中 108 项有完整或部分动作映射，16 项尚未实现：分镜重排、智能预演四项、工作室重拍、导演台预览/图像与视频渲染/定格/恢复导出五项，以及后期合成/字幕/配乐/转场/成片导出五项。
+**任务卡住了怎么办？** 让 Agent 查询原任务。遇到结果不明的状态，先核对它在即梦上的进度，再决定下一步；这样能减少重复生成。
 
-- 主体创建目前复制已有图片主体，文字更新不包含参考图重组。
-- 个人声音动作只处理已有声音的绑定、替换和解绑，不生成新音色。
-- 主体和分集永久删除未包含可恢复归档；分享图片读取仍缺成功运行验收。
-- 视频延长需要网页已保存的原生目标草稿，自动建目标与本地服务实际生成验收仍未完成。
-- 网页接口可能随官方更新变化；字段契约、代码存在和真实运行成功必须分开判断。
+**能同时接两个 Agent 吗？** 一个数据目录同时运行一个服务进程。切换客户端时先关闭原服务；独立用途可以通过 `--data-dir` 使用不同目录。
 
-公开包不携带任何账号的历史“已验收”凭证，`acceptance_records` 初始为空。用户自己的登录、权限、模型和实际生成需在本地验证。详见 [验证范围](docs/verification.md)。
+**现在测到哪一步了？** 已完成 406 项离线测试，以及安装包、GitHub 标签安装和官方 CLI 安装检查。真实账号的模型与生成结果由用户实际调用确认；平台测试详情在 [验证记录](docs/verification.md)。
 
-## 开发与隐私
+## 给开发者
+
+<details>
+<summary>10 个工具，分别负责什么</summary>
+
+| 工具 | 用途 |
+| --- | --- |
+| `capabilities` | 查看可调用动作和当前配置 |
+| `studio_catalog` | 查看功能覆盖与开发进度 |
+| `action_schema` | 获取某个动作的参数说明 |
+| `submit_job` / `submit_job_json` | 提交并保存任务 |
+| `get_job` | 查询任务和业务结果 |
+| `list_jobs` / `queue_summary` | 找回任务、查看排队情况 |
+| `cancel_job` | 取消尚未开始执行的任务 |
+| `artifact_manifest` | 校验受管素材并导出本地文件 |
+
+常用顺序：`capabilities` → `action_schema` → `submit_job` → `get_job`。重试同一请求时保留原 `idempotencyKey` 和完整参数。
+
+判断执行结果时，结合 `operationOutcome`、资源状态和实际文件一起看。`COMPLETED` 表示工具调用已结束，媒体生成可能还需要继续查询。
+
+</details>
 
 ```sh
 python3 scripts/test_all.py
-python3 -m pip wheel --no-deps . -w dist
+python3 scripts/build_release.py
 ```
 
-发布 wheel 和源码包时使用 `python3 scripts/build_release.py`（需要 uv）。该脚本清除源码归档中的本机用户名、uid/gid 与文件时间元数据，并生成 `dist/SHA256SUMS`。
+运行时使用 Python 标准库。发布脚本需要 uv，会生成 wheel、源码包和 `SHA256SUMS`，并清理源码归档中的本机用户元数据。GitHub Actions 配置可参考 [工作流模板](docs/github-actions-example.yml)。
 
-运行时只依赖 Python 标准库；构建使用 setuptools。源码、合成测试数据和固定接口契约可公开，账号、Cookie、令牌、数据库、日志、真实素材和测试账号回执均不进入仓库。请勿把本机数据目录作为 issue 附件。
+欢迎通过 Issue 分享问题和建议。提供版本、操作步骤和错误码，就很有帮助；账号凭据留在本机，详情见 [安全说明](SECURITY.md)。
 
-协议依据：[MCP stdio transport](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports)。第三方依赖与商标说明见 [NOTICE](NOTICE)，本项目代码许可见 [LICENSE](LICENSE)。
+---
+
+独立社区项目，基于官方 CLI 与部分网页接口适配。即梦及相关商标归各自权利人所有。代码采用 [MIT 许可](LICENSE)，第三方说明见 [NOTICE](NOTICE)。
