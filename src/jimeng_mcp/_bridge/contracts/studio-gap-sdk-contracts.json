@@ -1,0 +1,403 @@
+{
+  "formatVersion": 1,
+  "source": {
+    "kind": "extracted-official-web-interface-types",
+    "url": "https://lf3-lv-buz.vlabstatic.com/obj/image-lvweb-buz/ies/dreamina/novel_web/static/js/async/366425.4e127968d8.js",
+    "sha256": "55f57bb4c2c776458e1bc97743e2a3a7c5391f84b80e9d1d19316f8a642cb9c6"
+  },
+  "scope": "Request and response type declarations only. Not an official supported API or user execution evidence.",
+  "types": {
+    "pippit_business_api_asset.QueryPippitShareAssetInfoResponse": {
+      "fields": [
+        [
+          "ret",
+          "ret",
+          {
+            "union": [
+              "string",
+              "number"
+            ]
+          },
+          false
+        ],
+        [
+          "errmsg",
+          "errmsg",
+          "string",
+          false
+        ],
+        [
+          "svr_time",
+          "svrTime",
+          {
+            "ref": "pippit_business_api_asset.Int64"
+          },
+          false
+        ],
+        [
+          "log_id",
+          "logId",
+          "string",
+          false
+        ],
+        [
+          "data",
+          "data",
+          {
+            "ref": "capcut_business_common_asset.ShareImage"
+          },
+          false
+        ],
+        [
+          "BaseResp",
+          "baseResp",
+          {
+            "ref": "base.BaseResp"
+          },
+          false
+        ]
+      ]
+    },
+    "base.BaseResp": {
+      "fields": [
+        [
+          "StatusMessage",
+          "statusMessage",
+          "string",
+          false
+        ],
+        [
+          "StatusCode",
+          "statusCode",
+          "number",
+          false
+        ],
+        [
+          "Extra",
+          "extra",
+          {
+            "map": "string",
+            "key": "string"
+          },
+          false
+        ]
+      ]
+    },
+    "capcut_business_common_asset.ShareImage": {
+      "fields": [
+        [
+          "not_watermark_preview",
+          "notWatermarkPreview",
+          {
+            "ref": "capcut_business_common_asset.PreviewInfos"
+          },
+          false
+        ],
+        [
+          "dynamic_preview",
+          "dynamicPreview",
+          {
+            "ref": "capcut_business_common_asset.PreviewInfos"
+          },
+          false
+        ],
+        [
+          "compliance_preview",
+          "compliancePreview",
+          {
+            "ref": "capcut_business_common_asset.PreviewInfos"
+          },
+          false
+        ],
+        [
+          "brand_preview",
+          "brandPreview",
+          {
+            "ref": "capcut_business_common_asset.PreviewInfos"
+          },
+          false
+        ],
+        [
+          "fusion_preview",
+          "fusionPreview",
+          {
+            "ref": "capcut_business_common_asset.PreviewInfos"
+          },
+          false
+        ],
+        [
+          "share_preview",
+          "sharePreview",
+          {
+            "ref": "capcut_business_common_asset.PreviewInfos"
+          },
+          false
+        ],
+        [
+          "download_preview",
+          "downloadPreview",
+          {
+            "ref": "capcut_business_common_asset.PreviewInfos"
+          },
+          false
+        ]
+      ]
+    },
+    "capcut_business_common_asset.PreviewInfos": {
+      "fields": [
+        [
+          "previewinfo_1080p",
+          "previewinfo1080p",
+          {
+            "ref": "capcut_business_common_asset.PreviewInfo"
+          },
+          false
+        ],
+        [
+          "previewinfo_720p",
+          "previewinfo720p",
+          {
+            "ref": "capcut_business_common_asset.PreviewInfo"
+          },
+          false
+        ],
+        [
+          "previewinfo_480p",
+          "previewinfo480p",
+          {
+            "ref": "capcut_business_common_asset.PreviewInfo"
+          },
+          false
+        ],
+        [
+          "previewinfo_2048p",
+          "previewinfo2048p",
+          {
+            "ref": "capcut_business_common_asset.PreviewInfo"
+          },
+          false
+        ],
+        [
+          "previewinfo",
+          "previewinfo",
+          {
+            "ref": "capcut_business_common_asset.PreviewInfo"
+          },
+          false
+        ]
+      ]
+    },
+    "capcut_business_common_asset.PreviewInfo": {
+      "fields": [
+        [
+          "preview_url",
+          "previewUrl",
+          "string",
+          false
+        ],
+        [
+          "metadata",
+          "metadata",
+          {
+            "ref": "capcut_business_common_asset.Metadata"
+          },
+          false
+        ]
+      ]
+    },
+    "capcut_business_common_asset.Metadata": {
+      "fields": [
+        [
+          "height",
+          "height",
+          {
+            "ref": "capcut_business_common_asset.Int64"
+          },
+          false
+        ],
+        [
+          "width",
+          "width",
+          {
+            "ref": "capcut_business_common_asset.Int64"
+          },
+          false
+        ],
+        [
+          "ratio",
+          "ratio",
+          "string",
+          false
+        ],
+        [
+          "format",
+          "format",
+          "string",
+          false
+        ],
+        [
+          "md5",
+          "md5",
+          "string",
+          false
+        ],
+        [
+          "size",
+          "size",
+          {
+            "ref": "capcut_business_common_asset.Int64"
+          },
+          false
+        ]
+      ]
+    },
+    "capcut_business_common_asset.Int64": {
+      "union": [
+        "string",
+        "number"
+      ]
+    },
+    "pippit_business_api_asset.Int64": {
+      "union": [
+        "string",
+        "number"
+      ]
+    },
+    "pippit_business_api_asset.QueryPippitShareAssetInfoRequest": {
+      "fields": [
+        [
+          "ArtifactID",
+          "artifactId",
+          "string",
+          false
+        ],
+        [
+          "Base",
+          "base",
+          {
+            "ref": "base.Base"
+          },
+          true
+        ]
+      ]
+    },
+    "base.Base": {
+      "fields": [
+        [
+          "LogID",
+          "logId",
+          "string",
+          false
+        ],
+        [
+          "Caller",
+          "caller",
+          "string",
+          false
+        ],
+        [
+          "Addr",
+          "addr",
+          "string",
+          false
+        ],
+        [
+          "Client",
+          "client",
+          "string",
+          false
+        ],
+        [
+          "TrafficEnv",
+          "trafficEnv",
+          {
+            "ref": "base.TrafficEnv"
+          },
+          false
+        ],
+        [
+          "Extra",
+          "extra",
+          {
+            "map": "string",
+            "key": "string"
+          },
+          false
+        ]
+      ]
+    },
+    "base.TrafficEnv": {
+      "fields": [
+        [
+          "Open",
+          "open",
+          "boolean",
+          false
+        ],
+        [
+          "Env",
+          "env",
+          "string",
+          false
+        ]
+      ]
+    },
+    "pippit_business_api_novel_agent.DeleteEpisodeResponse": {
+      "fields": [
+        [
+          "ret",
+          "ret",
+          {
+            "union": [
+              "string",
+              "number"
+            ]
+          },
+          false
+        ],
+        [
+          "errmsg",
+          "errmsg",
+          "string",
+          false
+        ],
+        [
+          "svr_time",
+          "svrTime",
+          {
+            "ref": "pippit_business_api_novel_agent.Int64"
+          },
+          false
+        ],
+        [
+          "log_id",
+          "logId",
+          "string",
+          false
+        ]
+      ]
+    },
+    "pippit_business_api_novel_agent.Int64": {
+      "union": [
+        "string",
+        "number"
+      ]
+    },
+    "pippit_business_api_novel_agent.DeleteEpisodeRequest": {
+      "fields": [
+        [
+          "episode_id",
+          "episodeId",
+          "string",
+          false
+        ],
+        [
+          "overview_pippit_asset_id",
+          "overviewPippitAssetId",
+          "string",
+          false
+        ]
+      ]
+    }
+  }
+}

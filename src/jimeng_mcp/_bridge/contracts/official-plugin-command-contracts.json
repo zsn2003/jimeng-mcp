@@ -1,0 +1,146 @@
+{
+  "formatVersion": 1,
+  "source": {
+    "url": "https://jimeng.jianying.com/cli",
+    "syntaxSnapshotVersion": "1.4.22"
+  },
+  "scope": "Factual interface metadata for this unofficial adapter. No official binary, full help text, account data, credentials or execution acceptance is included.",
+  "authentication": "User authorizes their own separate official CLI account locally.",
+  "actions": {
+    "plugin.video.multiframe": {
+      "command": [
+        "multiframe2video"
+      ],
+      "bridgeParameters": [
+        "artifactIds",
+        "dryRun",
+        "duration",
+        "projectId",
+        "prompt",
+        "resolution",
+        "sessionId",
+        "transitionDurations",
+        "transitionPrompts"
+      ],
+      "requiredBridgeParameters": [
+        "projectId",
+        "artifactIds",
+        "resolution"
+      ],
+      "mutating": true,
+      "billable": true
+    },
+    "plugin.session.create": {
+      "command": [
+        "session",
+        "create"
+      ],
+      "bridgeParameters": [
+        "dryRun",
+        "name"
+      ],
+      "requiredBridgeParameters": [],
+      "mutating": true,
+      "billable": false
+    },
+    "plugin.session.list": {
+      "command": [
+        "session",
+        "list"
+      ],
+      "bridgeParameters": [
+        "limit"
+      ],
+      "requiredBridgeParameters": [],
+      "mutating": false,
+      "billable": false
+    },
+    "plugin.session.search": {
+      "command": [
+        "session",
+        "search"
+      ],
+      "bridgeParameters": [
+        "name"
+      ],
+      "requiredBridgeParameters": [
+        "name"
+      ],
+      "mutating": false,
+      "billable": false
+    },
+    "plugin.session.rename": {
+      "command": [
+        "session",
+        "rename"
+      ],
+      "bridgeParameters": [
+        "dryRun",
+        "name",
+        "sessionId"
+      ],
+      "requiredBridgeParameters": [
+        "sessionId",
+        "name"
+      ],
+      "mutating": true,
+      "billable": false
+    },
+    "plugin.session.delete": {
+      "command": [
+        "session",
+        "delete"
+      ],
+      "bridgeParameters": [
+        "dryRun",
+        "sessionId"
+      ],
+      "requiredBridgeParameters": [
+        "sessionId"
+      ],
+      "mutating": true,
+      "billable": false
+    },
+    "plugin.task.list": {
+      "command": [
+        "list_task"
+      ],
+      "bridgeParameters": [
+        "limit",
+        "offset",
+        "status",
+        "submitId",
+        "taskType"
+      ],
+      "requiredBridgeParameters": [],
+      "mutating": false,
+      "billable": false
+    },
+    "plugin.task.read": {
+      "command": [
+        "query_result"
+      ],
+      "bridgeParameters": [
+        "submitId"
+      ],
+      "requiredBridgeParameters": [
+        "submitId"
+      ],
+      "mutating": false,
+      "billable": false
+    }
+  },
+  "limits": {
+    "localDryRunOnly": true,
+    "multiframeImageCount": [
+      2,
+      20
+    ],
+    "multiframeResolutions": [
+      "720p",
+      "1080p"
+    ],
+    "multiframeNumericCreditCeilingSupported": false,
+    "multiframeSampleModeSupported": false
+  }
+}

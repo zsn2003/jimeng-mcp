@@ -1,0 +1,63 @@
+{
+  "fixture": "Synthetic catalog response for bounded unit tests; not live execution evidence.",
+  "commandFields": {
+    "document.title": {
+      "title": {
+        "type": "string",
+        "required": true
+      }
+    },
+    "object.preset": {
+      "preset": {
+        "type": "string",
+        "required": true,
+        "shape": "One of catalog presets[].id"
+      },
+      "id": {
+        "type": "string",
+        "required": true,
+        "shape": "New object id"
+      },
+      "name": {
+        "type": "string",
+        "required": false
+      }
+    },
+    "workspace.performance": {
+      "copyStaging": {
+        "type": "boolean",
+        "required": true,
+        "shape": "true copies the staging scene into a new performance workspace"
+      }
+    },
+    "timeline.set": {
+      "fps": {
+        "type": "number",
+        "required": false
+      },
+      "durationFrames": {
+        "type": "number",
+        "required": false,
+        "shape": "Cannot cut existing content"
+      },
+      "loop": {
+        "type": "boolean",
+        "required": false
+      }
+    }
+  },
+  "commands": [
+    "document.title",
+    "object.preset",
+    "workspace.performance",
+    "timeline.set"
+  ],
+  "presets": [
+    {
+      "presetId": "chair"
+    }
+  ],
+  "primitives": [
+    "cube"
+  ]
+}

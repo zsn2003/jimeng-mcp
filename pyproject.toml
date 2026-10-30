@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jimeng-local-mcp"
+version = "0.1.0"
+description = "Local stdio MCP for Jimeng: user-owned login, persistent jobs, and media workflows"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE", "NOTICE"]
+keywords = ["mcp", "jimeng", "dreamina", "aigc", "stdio"]
+classifiers = ["Programming Language :: Python :: 3", "Operating System :: POSIX :: Linux", "Operating System :: MacOS"]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/zsn2003/jimeng-mcp"
+Issues = "https://github.com/zsn2003/jimeng-mcp/issues"
+
+[project.scripts]
+jimeng-mcp = "jimeng_mcp.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"jimeng_mcp._bridge" = ["*.json", "contracts/*.json"]

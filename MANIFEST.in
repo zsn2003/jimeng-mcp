@@ -1,0 +1,6 @@
+include README.md LICENSE NOTICE SECURITY.md
+recursive-include docs *.md *.yml
+recursive-include scripts *.py
+recursive-include tests *.py *.json
+recursive-include src/jimeng_mcp *.py *.json
+global-exclude __pycache__ *.py[cod] .DS_Store

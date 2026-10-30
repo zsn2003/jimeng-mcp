@@ -1,0 +1,14 @@
+This is an independent community MCP integration, not an official ByteDance,
+Jianying, Dreamina, or Jimeng product. Names and trademarks belong to their
+respective owners. The MIT license covers this repository's integration code.
+
+Official CLI executables are not redistributed. Optional installation obtains
+platform executables from the vendor's HTTPS distribution and checks the
+pinned SHA-256 for the stated release. Their use and the remote service remain
+subject to the vendor's own terms and the user's own account permissions.
+
+The JSON files under src/jimeng_mcp/_bridge/contracts describe observed
+interface fields needed by the adapters. They are not an API stability
+promise, official SDK distribution, or authorization to access another user.
+No vendor executable, account session, production receipt, customer asset,
+private team configuration, or private deployment endpoint is bundled.

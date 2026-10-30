@@ -1,0 +1,5570 @@
+{
+  "manifestVersion": "2.3",
+  "title": "Jimeng MCP capability coverage",
+  "registryKind": "implementation_coverage_not_live_account_acceptance",
+  "scope": "Fixed action mappings and known feature gaps. No account identities, credentials, media, production deployment or past execution acceptance are distributed.",
+  "webAdapterImplemented": true,
+  "operationCount": 124,
+  "defaults": {
+    "available": false,
+    "serverExecutionVerified": false,
+    "inputContractStatus": "proposal_only_until_mapped",
+    "credentialValuesIncluded": false
+  },
+  "objectIdentityBoundaries": [
+    {
+      "object": "personal_subject",
+      "identity": [
+        "subject_id",
+        "data_id"
+      ],
+      "notInterchangeableWith": [
+        "CharacterID",
+        "nodeId",
+        "resourceId",
+        "PippitAssetID"
+      ]
+    },
+    {
+      "object": "public_studio_role_template",
+      "identity": [
+        "CharacterID"
+      ],
+      "notInterchangeableWith": [
+        "subject_id",
+        "director_character_id"
+      ]
+    },
+    {
+      "object": "canvas_element",
+      "identity": [
+        "projectId",
+        "nodeId"
+      ],
+      "notInterchangeableWith": [
+        "subject_id",
+        "CharacterID"
+      ]
+    },
+    {
+      "object": "studio_asset",
+      "identity": [
+        "PippitAssetID"
+      ],
+      "notInterchangeableWith": [
+        "nodeId",
+        "resourceId"
+      ]
+    },
+    {
+      "object": "stored_subject_voice",
+      "identity": [
+        "subject_id",
+        "vid"
+      ],
+      "notInterchangeableWith": [
+        "cli_tts_voice_id"
+      ]
+    },
+    {
+      "object": "official_plugin_session",
+      "identity": [
+        "sessionId"
+      ],
+      "notInterchangeableWith": [
+        "projectId",
+        "nodeId",
+        "threadId"
+      ]
+    },
+    {
+      "object": "official_plugin_task",
+      "identity": [
+        "submit_id"
+      ],
+      "notInterchangeableWith": [
+        "canvas submitId",
+        "resourceId",
+        "subject_id"
+      ]
+    }
+  ],
+  "sharedEnablementRequirements": [
+    "Configure and authorize your own official CLI accounts locally; no credentials or login state are supplied.",
+    "Web operations additionally require a user-provided private 0600 session file; CLI OAuth alone does not enable Studio web routes.",
+    "Only fixed actions and strict schemas are accepted; arbitrary CLI commands, URLs, headers and cookies are not tool inputs.",
+    "Writes default to dry-run; read-only and credit policies remain explicit local configuration.",
+    "Inspect the original job and target after an uncertain outcome; do not blindly create a new job to repeat a write.",
+    "Job status and business outcome are separate; completed transport does not certify persisted state or finished media."
+  ],
+  "operations": [
+    {
+      "operation": "personal.subject.list",
+      "module": "personal_subject",
+      "label": "列出当前账号个人主体",
+      "semanticScope": "个人主体库；包含主体名称、subject_id、data_id和控制状态。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "subject.list": [
+            "cursor",
+            "limit",
+            "sortField",
+            "sortOrder",
+            "subjectSource"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "subject.list",
+      "callableActions": [
+        "subject.list"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "personal.subject.get",
+      "module": "personal_subject",
+      "label": "读取个人主体详情",
+      "semanticScope": "通过真实 subjectId 定位主体完整记录。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "subject.get": [
+            "maxPages",
+            "pageSize",
+            "subjectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "通过分页subject.list按subject_id精确筛选；不伪造getById端点；超过页数上限不宣称主体不存在。"
+      ],
+      "callableAction": "subject.get",
+      "callableActions": [
+        "subject.get"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "personal.subject.create",
+      "module": "personal_subject",
+      "label": "创建个人主体",
+      "semanticScope": "从当前账号已有主体复制图片/描述/保存音色，新建独立主体；不含任意图片上传。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "personal.subject.create": [
+            "description",
+            "dryRun",
+            "expectedSourceDataId",
+            "includeAuxiliary",
+            "includeVoices",
+            "name",
+            "sourceSubjectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "任意新素材上传创建及全部主体类型",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "从当前账号已有主体复制图片/描述/保存音色，新建独立主体；不含任意图片上传。",
+        "写入结果须实际回读；接口完成不等于媒体生成。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "personal.subject.create"
+      ],
+      "backend": "authenticated-web-fixed-operation",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "personal.subject.update",
+      "module": "personal_subject",
+      "label": "更新个人主体",
+      "semanticScope": "仅改名称和描述，保存原图与声音；data_id作写前检查，上游没有原子条件版本更新。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "personal.subject.update": [
+            "description",
+            "dryRun",
+            "expectedDataId",
+            "name",
+            "subjectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "图片/视频参考列表重组",
+        "上游原子版本保护不可用",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "仅改名称和描述，保存原图与声音；data_id作写前检查，上游没有原子条件版本更新。",
+        "写入结果须实际回读；接口完成不等于媒体生成。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "personal.subject.update"
+      ],
+      "backend": "authenticated-web-fixed-operation",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "personal.subject.archive",
+      "module": "personal_subject",
+      "label": "永久删除个人主体（无归档恢复）",
+      "semanticScope": "仅封装永久删除个人主体，默认dry-run，真实删除需confirmPermanentDelete；没有可恢复归档或恢复接口，未做真实删除验收。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "personal.subject.delete": [
+            "confirmPermanentDelete",
+            "dryRun",
+            "expectedDataId",
+            "subjectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "可恢复归档与恢复接口",
+        "真实永久删除验收",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "仅封装永久删除个人主体，默认dry-run，真实删除需confirmPermanentDelete；没有可恢复归档或恢复接口，未做真实删除验收。",
+        "写入结果须实际回读；接口完成不等于媒体生成。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "personal.subject.delete"
+      ],
+      "backend": "authenticated-web-fixed-operation",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "personal.subject.reference",
+      "module": "personal_subject",
+      "label": "在生成任务引用已存个人主体",
+      "semanticScope": "将个人主体身份及参考素材绑定到具体任务。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "subject.import_element": [
+            "dryRun",
+            "includeAuxiliary",
+            "includeVoice",
+            "projectId",
+            "subjectId",
+            "title",
+            "voiceIndex"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "把主体实时图、描述和可选保存音色冻结复制为新element；此action不提交生成，跨镜头身份一致性尚未验收。"
+      ],
+      "callableAction": "subject.import_element",
+      "callableActions": [
+        "subject.import_element"
+      ],
+      "backend": "fixed-subject-import",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "personal.voice.list",
+      "module": "personal_voice",
+      "label": "列出主体保存的声音素材",
+      "semanticScope": "个人主体内保存的声音素材；不是 CLI 全局 TTS 音色目录。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "subject.get": [
+            "maxPages",
+            "pageSize",
+            "subjectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "subject.get返回该主体voice_list；无独立声音库分页接口，不等同CLI TTS音色目录。"
+      ],
+      "callableAction": "subject.get",
+      "callableActions": [
+        "subject.get"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "personal.voice.get",
+      "module": "personal_voice",
+      "label": "读取声音素材元信息",
+      "semanticScope": "个人主体内保存的声音素材；不是 CLI 全局 TTS 音色目录。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "subject.get": [
+            "maxPages",
+            "pageSize",
+            "subjectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "subject.get读取该主体保存音频的vid/元信息；无独立声vid查询端点。"
+      ],
+      "callableAction": "subject.get",
+      "callableActions": [
+        "subject.get"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "personal.voice.create",
+      "module": "personal_voice",
+      "label": "新增已有声音绑定",
+      "semanticScope": "把当前账号某主体的已保存声音绑定到目标主体；不生成新声音，不接受任意音频URL。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "personal.voice.create": [
+            "dryRun",
+            "expectedDataId",
+            "expectedSourceDataId",
+            "select",
+            "sourceSubjectId",
+            "sourceVoiceIndex",
+            "subjectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "音色生成与上传契约/费用/产物验收",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "把当前账号某主体的已保存声音绑定到目标主体；不生成新声音，不接受任意音频URL。",
+        "写入结果须实际回读；接口完成不等于媒体生成。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "personal.voice.create"
+      ],
+      "backend": "authenticated-web-fixed-operation",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "personal.voice.update",
+      "module": "personal_voice",
+      "label": "替换已有声音绑定",
+      "semanticScope": "用当前账号已保存声音替换目标绑定；不编辑源音频或生成新音色。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "personal.voice.update": [
+            "dryRun",
+            "expectedDataId",
+            "expectedSourceDataId",
+            "select",
+            "sourceSubjectId",
+            "sourceVoiceIndex",
+            "subjectId",
+            "voiceIndex"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "源声音重生成、音频内容编辑",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "用当前账号已保存声音替换目标绑定；不编辑源音频或生成新音色。",
+        "写入结果须实际回读；接口完成不等于媒体生成。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "personal.voice.update"
+      ],
+      "backend": "authenticated-web-fixed-operation",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "personal.voice.archive",
+      "module": "personal_voice",
+      "label": "解除声音绑定（保留媒体）",
+      "semanticScope": "解除目标主体上的声音绑定；保留原声音资产，不是音频素材归档/删除。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "personal.voice.archive": [
+            "dryRun",
+            "expectedDataId",
+            "subjectId",
+            "voiceIndex"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "音频资产本体归档及恢复",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "解除目标主体上的声音绑定；保留原声音资产，不是音频素材归档/删除。",
+        "写入结果须实际回读；接口完成不等于媒体生成。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "personal.voice.archive"
+      ],
+      "backend": "authenticated-web-fixed-operation",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "personal.voice.reference",
+      "module": "personal_voice",
+      "label": "选择或绑定主体声音",
+      "semanticScope": "个人主体的声音素材和默认选择状态。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "subject.import_element": [
+            "dryRun",
+            "includeAuxiliary",
+            "includeVoice",
+            "projectId",
+            "subjectId",
+            "title",
+            "voiceIndex"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "subject.import_element把保存MP3复制为audio资源并绑定新element；多音色须明确索引；不证明TTS或成片中的声音质量。"
+      ],
+      "callableAction": "subject.import_element",
+      "callableActions": [
+        "subject.import_element"
+      ],
+      "backend": "fixed-subject-import",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.role.list",
+      "module": "public_role",
+      "label": "列出工作室公共角色模板",
+      "semanticScope": "公共小说/短剧角色模板，身份键为 CharacterID。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "public_character.search": [
+            "ageGroup",
+            "bodyBuild",
+            "characterAttribute",
+            "characterCategory",
+            "characterScene",
+            "culturalRegion",
+            "era",
+            "gender",
+            "hairColor",
+            "hairLength",
+            "heightCategory",
+            "name",
+            "pageNumber",
+            "pageSize",
+            "race",
+            "skinTone",
+            "temperament"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "public_character.search",
+      "callableActions": [
+        "public_character.search"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.role.search",
+      "module": "public_role",
+      "label": "按条件搜索公共角色模板",
+      "semanticScope": "公共模板的搜索与筛选。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "public_character.search": [
+            "ageGroup",
+            "bodyBuild",
+            "characterAttribute",
+            "characterCategory",
+            "characterScene",
+            "culturalRegion",
+            "era",
+            "gender",
+            "hairColor",
+            "hairLength",
+            "heightCategory",
+            "name",
+            "pageNumber",
+            "pageSize",
+            "race",
+            "skinTone",
+            "temperament"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "支持 SDK 的固定筛选结构；筛选组合与返回形状需在使用者账号中验证。"
+      ],
+      "callableAction": "public_character.search",
+      "callableActions": [
+        "public_character.search"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.role.get",
+      "module": "public_role",
+      "label": "读取公共角色模板详情",
+      "semanticScope": "公共模板/工作室角色配置。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "public_character.read": [
+            "characterId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "public_character.read",
+      "callableActions": [
+        "public_character.read"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.role.face_config",
+      "module": "public_role",
+      "label": "读取捏脸配置",
+      "semanticScope": "公共模板/工作室角色配置。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "public_character.face_config": []
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "public_character.face_config",
+      "callableActions": [
+        "public_character.face_config"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.role.expression_config",
+      "module": "public_role",
+      "label": "读取表情配置",
+      "semanticScope": "公共模板/工作室角色配置。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "public_character.expression_config": []
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "public_character.expression_config",
+      "callableActions": [
+        "public_character.expression_config"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.style.list",
+      "module": "studio_project",
+      "label": "列出小说/短剧样式",
+      "semanticScope": "小说业务样式，不是 model list。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.style.list": [
+            "page",
+            "pageSize",
+            "status"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.style.list",
+      "callableActions": [
+        "studio.style.list"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.project.list",
+      "module": "studio_project",
+      "label": "列出工作室项目",
+      "semanticScope": "工作室创作项目，而非普通画布列表。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.project.list": [
+            "cursor",
+            "limit",
+            "projectIdList",
+            "statusList"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.project.list",
+      "callableActions": [
+        "studio.project.list"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.project.get",
+      "module": "studio_project",
+      "label": "读取工作室项目与会话",
+      "semanticScope": "工作室项目上下文。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.project.list": [
+            "cursor",
+            "limit",
+            "projectIdList",
+            "statusList"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "通过projectIdList读取项目元数据；不是聚合所有线程、剧本和故事板的完整项目接口。"
+      ],
+      "callableAction": "studio.project.list",
+      "callableActions": [
+        "studio.project.list"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.project.create",
+      "module": "studio_project",
+      "label": "创建工作室项目",
+      "semanticScope": "工作室业务项目。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.project.create": [
+            "dryRun",
+            "projectType",
+            "title"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "只创建项目壳；短剧画布须create_canvas后initialize，并读取线程/overview确认。"
+      ],
+      "callableAction": "studio.project.create",
+      "callableActions": [
+        "studio.project.create"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.project.clone",
+      "module": "studio_project",
+      "label": "克隆工作室项目",
+      "semanticScope": "工作室业务项目。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.project.clone": [
+            "dryRun",
+            "sourceProjectId",
+            "sourceThreadId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.project.clone",
+      "callableActions": [
+        "studio.project.clone"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.script.get",
+      "module": "studio_script",
+      "label": "读取结构化剧本",
+      "semanticScope": "含剧集、人物、对白、镜头关联的工作室剧本。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.script.read": [
+            "client",
+            "projectId",
+            "scriptAssetId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.script.read",
+      "callableActions": [
+        "studio.script.read"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.script.save",
+      "module": "studio_script",
+      "label": "保存结构化剧本",
+      "semanticScope": "结构化业务剧本及其版本。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.script.save": [
+            "aiScriptAssetId",
+            "dryRun",
+            "overviewAssetId",
+            "patchOperations"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "仅支持已声明类型的 patch；操作名称和字段必须符合当前上游契约，不开放任意 JSON 路径。"
+      ],
+      "callableAction": "studio.script.save",
+      "callableActions": [
+        "studio.script.save"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.script.update",
+      "module": "studio_script",
+      "label": "修改结构化剧本",
+      "semanticScope": "结构化业务剧本及其版本。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.script.save": [
+            "aiScriptAssetId",
+            "dryRun",
+            "overviewAssetId",
+            "patchOperations"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "映射固定 typed patch，不代表任意剧本字段更新或任意 JSON 路径写入。"
+      ],
+      "callableAction": "studio.script.save",
+      "callableActions": [
+        "studio.script.save"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.script.restore",
+      "module": "studio_script",
+      "label": "恢复剧本快照",
+      "semanticScope": "结构化业务剧本及其版本。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.script.snapshot.restore": [
+            "dryRun",
+            "overviewAssetId",
+            "snapshotType",
+            "version"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.script.snapshot.restore",
+      "callableActions": [
+        "studio.script.snapshot.restore"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.episode.create",
+      "module": "studio_script",
+      "label": "新增或生成分集",
+      "semanticScope": "业务剧本中的分集对象。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "billable_unknown",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.episode.create": [
+            "dryRun",
+            "episodeName",
+            "episodeTitle",
+            "overviewAssetId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.episode.create",
+      "callableActions": [
+        "studio.episode.create"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.episode.update",
+      "module": "studio_script",
+      "label": "更新分集内容",
+      "semanticScope": "按原文分集raw_content更新正文，核对所属概览和版本，保存后独立回读。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.episode.update": [
+            "aiScriptAssetId",
+            "content",
+            "dryRun",
+            "episodeAssetId",
+            "episodeNum",
+            "expectedVersion",
+            "overviewAssetId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "按原文分集raw_content更新正文，核对所属概览和版本，保存后独立回读。",
+        "写入结果须实际回读；接口完成不等于媒体生成。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "studio.episode.update"
+      ],
+      "backend": "authenticated-web-fixed-operation",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.episode.delete",
+      "module": "studio_script",
+      "label": "删除分集",
+      "semanticScope": "已封装明确DeleteEpisode接口；永久删除必须明确确认，未做真实删除验收，无恢复保证。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.episode.delete": [
+            "confirmPermanentDelete",
+            "dryRun",
+            "episodeAssetId",
+            "episodeId",
+            "expectedOverviewVersion",
+            "overviewAssetId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "真实永久删除及不可恢复结果验收",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "已封装明确DeleteEpisode接口；永久删除必须明确确认，未做真实删除验收，无恢复保证。",
+        "写入结果须实际回读；接口完成不等于媒体生成。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "studio.episode.delete"
+      ],
+      "backend": "authenticated-web-fixed-operation",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.storyboard.list",
+      "module": "storyboard",
+      "label": "读取故事板与片段",
+      "semanticScope": "小说/短剧工作室故事板与片段，独立于导演台场景分镜。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.storyboard.read": [
+            "client",
+            "projectId",
+            "storyboardAssetId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "读取调用方指定的真实storyboard资产；不是跨项目自动枚举。"
+      ],
+      "callableAction": "studio.storyboard.read",
+      "callableActions": [
+        "studio.storyboard.read"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.storyboard.create",
+      "module": "storyboard",
+      "label": "新增故事板片段",
+      "semanticScope": "小说/短剧工作室故事板与片段，独立于导演台场景分镜。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "billable_unknown",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.storyboard.create": [
+            "dryRun",
+            "overviewAssetId",
+            "storyboardAssetId",
+            "title"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.storyboard.create",
+      "callableActions": [
+        "studio.storyboard.create"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.storyboard.update",
+      "module": "storyboard",
+      "label": "修改故事板片段",
+      "semanticScope": "小说/短剧工作室故事板与片段，独立于导演台场景分镜。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.storyboard.save": [
+            "artifactId",
+            "dryRun",
+            "overviewAssetId",
+            "saveMode",
+            "storyboard",
+            "storyboardAssetId",
+            "uid",
+            "workspaceId"
+          ],
+          "studio.storyboard.modify": [
+            "artifactId",
+            "dryRun",
+            "operations",
+            "storyboardAssetId",
+            "uid",
+            "workspaceId"
+          ],
+          "studio.storyboard.description.update": [
+            "canvasAssetId",
+            "description",
+            "dryRun",
+            "expectedVersion",
+            "shotAssetId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "V2 镜头描述更新、V21 save/modify 是不同结构，须按各自 action schema 调用并回读。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "studio.storyboard.save",
+        "studio.storyboard.modify",
+        "studio.storyboard.description.update"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.storyboard.reorder",
+      "module": "storyboard",
+      "label": "调整片段顺序",
+      "semanticScope": "小说/短剧工作室故事板与片段，独立于导演台场景分镜。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "episodeId",
+          "storyboardIds",
+          "expectedVersion"
+        ]
+      },
+      "missingEvidence": [
+        "片段ID、顺序、剧集关联及版本schema",
+        "对应操作输入输出和成功结果"
+      ],
+      "semanticConstraints": [
+        "generic asset 路径不足以证明故事板专用行为。"
+      ],
+      "proposedBackend": "web_adapter_pending",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.storyboard.generate_images",
+      "module": "storyboard",
+      "label": "批量生成分镜图",
+      "semanticScope": "小说/短剧工作室故事板与片段，独立于导演台场景分镜。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.images.generate": [
+            "appearanceAssetId",
+            "appearanceAssetIds",
+            "assetId",
+            "assetNamespace",
+            "dryRun",
+            "generateScope",
+            "generateType",
+            "nodeId",
+            "overviewAssetId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.images.generate",
+      "callableActions": [
+        "studio.images.generate"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.storyboard.bind_video",
+      "module": "storyboard",
+      "label": "绑定分集镜头视频",
+      "semanticScope": "小说/短剧工作室故事板与片段，独立于导演台场景分镜。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.episode.videos.update": [
+            "dryRun",
+            "expectedSourceVersion",
+            "operations",
+            "overviewAssetId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "仅更新指定分集video list；不冒充完整分集内容编辑。"
+      ],
+      "callableAction": "studio.episode.videos.update",
+      "callableActions": [
+        "studio.episode.videos.update"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.previsual.get",
+      "module": "previsual",
+      "label": "读取智能预演配置",
+      "semanticScope": "工作室智能预演功能。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "episodeId",
+          "storyboardIds"
+        ]
+      },
+      "missingEvidence": [
+        "专用端点、请求与响应",
+        "预演任务、源片段及产物身份",
+        "预演计费、终态和导出格式"
+      ],
+      "semanticConstraints": [
+        "不能把 director preview、普通视频生成或本地拼接命名为工作室智能预演已实现。"
+      ],
+      "proposedBackend": "web_adapter_pending",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.previsual.generate",
+      "module": "previsual",
+      "label": "生成智能预演",
+      "semanticScope": "工作室智能预演功能。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "episodeId",
+          "storyboardIds"
+        ]
+      },
+      "missingEvidence": [
+        "专用端点、请求与响应",
+        "预演任务、源片段及产物身份",
+        "预演计费、终态和导出格式"
+      ],
+      "semanticConstraints": [
+        "不能把 director preview、普通视频生成或本地拼接命名为工作室智能预演已实现。"
+      ],
+      "proposedBackend": "web_adapter_pending",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.previsual.preview",
+      "module": "previsual",
+      "label": "播放智能预演",
+      "semanticScope": "工作室智能预演功能。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": true,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "episodeId",
+          "storyboardIds"
+        ]
+      },
+      "missingEvidence": [
+        "专用端点、请求与响应",
+        "预演任务、源片段及产物身份",
+        "预演计费、终态和导出格式"
+      ],
+      "semanticConstraints": [
+        "不能把 director preview、普通视频生成或本地拼接命名为工作室智能预演已实现。"
+      ],
+      "proposedBackend": "web_adapter_pending",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.previsual.export",
+      "module": "previsual",
+      "label": "导出智能预演",
+      "semanticScope": "工作室智能预演功能。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "episodeId",
+          "storyboardIds"
+        ]
+      },
+      "missingEvidence": [
+        "专用端点、请求与响应",
+        "预演任务、源片段及产物身份",
+        "预演计费、终态和导出格式"
+      ],
+      "semanticConstraints": [
+        "不能把 director preview、普通视频生成或本地拼接命名为工作室智能预演已实现。"
+      ],
+      "proposedBackend": "web_adapter_pending",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.video.retake",
+      "module": "video_studio",
+      "label": "按工作室语义重拍镜头",
+      "semanticScope": "保留工作室镜头关系的重拍。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "sourceNodeId",
+          "sourceResourceId",
+          "shotId",
+          "changes"
+        ]
+      },
+      "missingEvidence": [
+        "重拍按钮触发请求和源对象继承规则",
+        "局部替换/保留参数与结果绑定",
+        "真实报价和产物验收"
+      ],
+      "semanticConstraints": [
+        "普通重新生成是另一种操作；目前没有重拍专用契约证据。"
+      ],
+      "proposedBackend": "web_adapter_pending",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.video.extend",
+      "module": "video_studio",
+      "label": "基于原视频延长",
+      "semanticScope": "网页 VideoExtend 来源节点续接。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "video.extend": [
+            "allowOrdinaryModel",
+            "allowSampleSource",
+            "dryRun",
+            "durationSeconds",
+            "expectedDraftVersion",
+            "model",
+            "projectId",
+            "prompt",
+            "sourceNodeId",
+            "sourceResourceId",
+            "targetNodeId",
+            "workflow"
+          ],
+          "video.extend.status": [
+            "projectId",
+            "resourceId",
+            "sourceNodeId",
+            "sourceResourceId",
+            "submitId",
+            "targetNodeId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号中的 mode=9 提交及终态校验",
+        "自动创建延长目标与最终续接画面质量验证",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "默认来源为成功的 1080p 正片；普通延长须明确 allowOrdinaryModel。",
+        "网页 mode=9 保留 reference_sources；普通 m2v、加 duration 或拼接不替代延长。",
+        "需要既有原生延长目标与准确草稿版本；服务端不自动创建目标。",
+        "若配置 sample_first 项目政策，还需单次 workflow.ordinaryApproval 声明；预检和旧任务读取不证明新生成完成。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "video.extend",
+        "video.extend.status"
+      ],
+      "backend": "fixed-canvas-video-extension",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.audio.generate_role",
+      "module": "voice_generation",
+      "label": "工作室角色配音",
+      "semanticScope": "工作室人物、台词及声音关联。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.role.audio.generate": [
+            "dryRun",
+            "mode",
+            "overviewAssetId",
+            "prompt",
+            "roleAssetId",
+            "text",
+            "uid",
+            "workspaceId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.role.audio.generate",
+      "callableActions": [
+        "studio.role.audio.generate"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.video.erase_subtitle",
+      "module": "editing",
+      "label": "去除镜头内字幕",
+      "semanticScope": "网页后期处理。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.video.erase_subtitle": [
+            "assetId",
+            "dryRun",
+            "shotId",
+            "uid",
+            "workspaceId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.video.erase_subtitle",
+      "callableActions": [
+        "studio.video.erase_subtitle"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.element.get",
+      "module": "canvas_reference",
+      "label": "读取画布element节点",
+      "semanticScope": "官方画布节点。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "node.read": [
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "node.read读取真实nodeId；调用方应核对返回type，类型专用的读取场景尚未逐一验收。"
+      ],
+      "callableAction": "node.read",
+      "callableActions": [
+        "node.read"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "relatedExistingBridgeAction": "node.read",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.element.create",
+      "module": "canvas_reference",
+      "label": "创建画布element节点",
+      "semanticScope": "官方画布节点；以完整CLI flag白名单逐类型实现。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "element.create": [
+            "auxiliary",
+            "description",
+            "dryRun",
+            "main",
+            "projectId",
+            "resourceSources",
+            "tags",
+            "title",
+            "voice",
+            "x",
+            "y"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "element.create",
+      "callableActions": [
+        "element.create"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.element.update",
+      "module": "canvas_reference",
+      "label": "更新画布element节点",
+      "semanticScope": "官方画布节点；以完整CLI flag白名单逐类型实现。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "element.update": [
+            "auxiliary",
+            "clearAuxiliary",
+            "clearDescription",
+            "clearMain",
+            "clearTags",
+            "clearVoice",
+            "description",
+            "dryRun",
+            "main",
+            "nodeId",
+            "projectId",
+            "resourceSources",
+            "tags",
+            "title",
+            "voice",
+            "x",
+            "y"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "element.update",
+      "callableActions": [
+        "element.update"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.text.get",
+      "module": "canvas_text",
+      "label": "读取画布text节点",
+      "semanticScope": "官方画布节点。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "node.read": [
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "node.read读取真实nodeId；调用方应核对返回type，类型专用的读取场景尚未逐一验收。"
+      ],
+      "callableAction": "node.read",
+      "callableActions": [
+        "node.read"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "relatedExistingBridgeAction": "node.read",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.text.create",
+      "module": "canvas_text",
+      "label": "创建画布text节点",
+      "semanticScope": "官方画布节点；以完整CLI flag白名单逐类型实现。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "text.create": [
+            "dryRun",
+            "projectId",
+            "text",
+            "title",
+            "x",
+            "y"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "text.create",
+      "callableActions": [
+        "text.create"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.text.update",
+      "module": "canvas_text",
+      "label": "更新画布text节点",
+      "semanticScope": "官方画布节点；以完整CLI flag白名单逐类型实现。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "text.update": [
+            "dryRun",
+            "nodeId",
+            "projectId",
+            "text",
+            "title",
+            "x",
+            "y"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "text.update",
+      "callableActions": [
+        "text.update"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.image.get",
+      "module": "image_generation",
+      "label": "读取画布image节点",
+      "semanticScope": "官方画布节点。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "node.read": [
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "node.read读取真实nodeId；调用方应核对返回type，类型专用的读取场景尚未逐一验收。"
+      ],
+      "callableAction": "node.read",
+      "callableActions": [
+        "node.read"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "relatedExistingBridgeAction": "node.read",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.image.create",
+      "module": "image_generation",
+      "label": "创建画布image节点",
+      "semanticScope": "官方画布节点；以完整CLI flag白名单逐类型实现。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "image.create": [
+            "count",
+            "dryRun",
+            "importKind",
+            "mode",
+            "model",
+            "projectId",
+            "prompt",
+            "ratio",
+            "refs",
+            "resolution",
+            "resourceIds",
+            "resourceSources",
+            "tags",
+            "title",
+            "x",
+            "y"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "image.create",
+      "callableActions": [
+        "image.create"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.image.update",
+      "module": "image_generation",
+      "label": "更新画布image节点",
+      "semanticScope": "官方画布节点；以完整CLI flag白名单逐类型实现。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "image.update": [
+            "clearGeneration",
+            "clearTags",
+            "count",
+            "dryRun",
+            "mode",
+            "model",
+            "nodeId",
+            "projectId",
+            "prompt",
+            "ratio",
+            "refs",
+            "resolution",
+            "resourceSources",
+            "tags",
+            "title",
+            "x",
+            "y"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "image.update",
+      "callableActions": [
+        "image.update"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.video.get",
+      "module": "video_generation",
+      "label": "读取画布video节点",
+      "semanticScope": "官方画布节点。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "node.read": [
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "node.read读取真实nodeId；调用方应核对返回type，类型专用的读取场景尚未逐一验收。"
+      ],
+      "callableAction": "node.read",
+      "callableActions": [
+        "node.read"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "relatedExistingBridgeAction": "node.read",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.video.create",
+      "module": "video_generation",
+      "label": "创建画布video节点",
+      "semanticScope": "官方画布节点；以完整CLI flag白名单逐类型实现。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "video.create": [
+            "count",
+            "dryRun",
+            "duration",
+            "importKind",
+            "mode",
+            "model",
+            "projectId",
+            "prompt",
+            "ratio",
+            "refs",
+            "resolution",
+            "resourceIds",
+            "resourceSources",
+            "tags",
+            "title",
+            "x",
+            "y"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "video.create",
+      "callableActions": [
+        "video.create"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.video.update",
+      "module": "video_generation",
+      "label": "更新画布video节点",
+      "semanticScope": "官方画布节点；以完整CLI flag白名单逐类型实现。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "video.update": [
+            "clearGeneration",
+            "clearTags",
+            "count",
+            "dryRun",
+            "duration",
+            "mode",
+            "model",
+            "nodeId",
+            "projectId",
+            "prompt",
+            "ratio",
+            "refs",
+            "resolution",
+            "resourceSources",
+            "tags",
+            "title",
+            "x",
+            "y"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "video.update",
+      "callableActions": [
+        "video.update"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.audio.get",
+      "module": "voice_generation",
+      "label": "读取画布audio节点",
+      "semanticScope": "官方画布节点。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "node.read": [
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "node.read读取真实nodeId；调用方应核对返回type，类型专用的读取场景尚未逐一验收。"
+      ],
+      "callableAction": "node.read",
+      "callableActions": [
+        "node.read"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "relatedExistingBridgeAction": "node.read",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.audio.create",
+      "module": "voice_generation",
+      "label": "创建画布audio节点",
+      "semanticScope": "官方画布节点；以完整CLI flag白名单逐类型实现。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "audio.create": [
+            "dryRun",
+            "duration",
+            "importKind",
+            "mode",
+            "model",
+            "projectId",
+            "prompt",
+            "refs",
+            "resourceIds",
+            "resourceSources",
+            "scenario",
+            "tags",
+            "title",
+            "voiceId",
+            "voiceName",
+            "x",
+            "y"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "audio.create",
+      "callableActions": [
+        "audio.create"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.audio.update",
+      "module": "voice_generation",
+      "label": "更新画布audio节点",
+      "semanticScope": "官方画布节点；以完整CLI flag白名单逐类型实现。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "audio.update": [
+            "clearGeneration",
+            "clearTags",
+            "dryRun",
+            "duration",
+            "mode",
+            "model",
+            "nodeId",
+            "projectId",
+            "prompt",
+            "refs",
+            "resourceSources",
+            "scenario",
+            "tags",
+            "title",
+            "voiceId",
+            "voiceName",
+            "x",
+            "y"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "audio.update",
+      "callableActions": [
+        "audio.update"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.timeline.get",
+      "module": "editing",
+      "label": "读取画布timeline节点",
+      "semanticScope": "官方画布节点。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "node.read": [
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "node.read读取真实nodeId；调用方应核对返回type，类型专用的读取场景尚未逐一验收。"
+      ],
+      "callableAction": "node.read",
+      "callableActions": [
+        "node.read"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "relatedExistingBridgeAction": "node.read",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.timeline.create",
+      "module": "editing",
+      "label": "创建画布timeline节点",
+      "semanticScope": "官方画布节点；以完整CLI flag白名单逐类型实现。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "timeline.create": [
+            "audioClips",
+            "clips",
+            "dryRun",
+            "projectId",
+            "resourceSources",
+            "title",
+            "x",
+            "y"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "timeline.create",
+      "callableActions": [
+        "timeline.create"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.timeline.update",
+      "module": "editing",
+      "label": "更新画布timeline节点",
+      "semanticScope": "官方画布节点；以完整CLI flag白名单逐类型实现。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "timeline.update": [
+            "audioClips",
+            "clearTracks",
+            "clips",
+            "dryRun",
+            "nodeId",
+            "projectId",
+            "resourceSources",
+            "title",
+            "x",
+            "y"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "timeline.update",
+      "callableActions": [
+        "timeline.update"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.image.generate",
+      "module": "image_generation",
+      "label": "生成画布image素材",
+      "semanticScope": "对已保存节点按实际模型规格生成。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "image.generate": [
+            "creditCeiling",
+            "dryRun",
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "image.generate",
+      "callableActions": [
+        "image.generate"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.video.generate",
+      "module": "video_generation",
+      "label": "生成画布video素材",
+      "semanticScope": "对已保存节点按实际模型规格生成。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "video.generate": [
+            "creditCeiling",
+            "dryRun",
+            "nodeId",
+            "projectId",
+            "workflow"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "video.generate",
+      "callableActions": [
+        "video.generate"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.audio.generate",
+      "module": "voice_generation",
+      "label": "生成画布audio素材",
+      "semanticScope": "对已保存节点按实际模型规格生成。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "audio.generate": [
+            "creditCeiling",
+            "dryRun",
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "audio.generate",
+      "callableActions": [
+        "audio.generate"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.video.regenerate",
+      "module": "video_generation",
+      "label": "重新生成一版视频",
+      "semanticScope": "明确的新生成轮次，保留旧版便于比较。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "video.regenerate": [
+            "creditCeiling",
+            "dryRun",
+            "nodeId",
+            "projectId",
+            "workflow"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "video.regenerate",
+      "callableActions": [
+        "video.regenerate"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.image.upscale",
+      "module": "media_postprocess",
+      "label": "图片超清",
+      "semanticScope": "官方独立后处理/样片转正命令。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "image.upscale": [
+            "creditCeiling",
+            "detail",
+            "dryRun",
+            "mode",
+            "nodeId",
+            "projectId",
+            "resolution",
+            "title"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "image.upscale",
+      "callableActions": [
+        "image.upscale"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.image.cutout",
+      "module": "media_postprocess",
+      "label": "图片抠图",
+      "semanticScope": "官方独立后处理/样片转正命令。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "image.cutout": [
+            "creditCeiling",
+            "dryRun",
+            "nodeId",
+            "projectId",
+            "title"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "image.cutout",
+      "callableActions": [
+        "image.cutout"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.video.upscale",
+      "module": "media_postprocess",
+      "label": "视频超清",
+      "semanticScope": "官方独立后处理/样片转正命令。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "video.upscale": [
+            "creditCeiling",
+            "dryRun",
+            "nodeId",
+            "projectId",
+            "resolution",
+            "title"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "video.upscale",
+      "callableActions": [
+        "video.upscale"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.video.interpolate",
+      "module": "media_postprocess",
+      "label": "视频补帧",
+      "semanticScope": "官方独立后处理/样片转正命令。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "video.interpolate": [
+            "creditCeiling",
+            "dryRun",
+            "fps",
+            "nodeId",
+            "projectId",
+            "title"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "video.interpolate",
+      "callableActions": [
+        "video.interpolate"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.video.promote_sample",
+      "module": "media_postprocess",
+      "label": "样片转正片",
+      "semanticScope": "官方独立后处理/样片转正命令。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "video.promote": [
+            "creditCeiling",
+            "dryRun",
+            "nodeId",
+            "projectId",
+            "resolution",
+            "workflow"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "video.promote",
+      "callableActions": [
+        "video.promote"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "relatedExistingBridgeAction": "video.promote",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "voice.catalog.list",
+      "module": "voice_generation",
+      "label": "列出官方TTS音色",
+      "semanticScope": "CLI音色目录。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "voice.list": [
+            "count",
+            "model",
+            "offset"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "voice.list",
+      "callableActions": [
+        "voice.list"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "director.create",
+      "module": "director",
+      "label": "创建导演台",
+      "semanticScope": "官方导演台场景数据。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "director.create": [
+            "dryRun",
+            "projectId",
+            "title"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "director.create",
+      "callableActions": [
+        "director.create"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "director.get",
+      "module": "director",
+      "label": "读取导演台",
+      "semanticScope": "官方导演台场景数据。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "director.get": [
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "director.get",
+      "callableActions": [
+        "director.get"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "director.pull",
+      "module": "director",
+      "label": "拉取导演台工作副本",
+      "semanticScope": "官方导演台场景数据。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "director.draft.pull": [
+            "dryRun",
+            "nodeId",
+            "projectId",
+            "versionId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "director.draft.pull",
+      "callableActions": [
+        "director.draft.pull"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "director.apply",
+      "module": "director",
+      "label": "修改导演台场景/镜头/动作",
+      "semanticScope": "官方导演台场景数据。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "director.apply": [
+            "commands",
+            "dryRun",
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "只暴露当前catalog支持的typed命令子集；object.add/object.set/environment.set/pose.set/motion.add/import等未开放。"
+      ],
+      "callableAction": "director.apply",
+      "callableActions": [
+        "director.apply"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "director.sync",
+      "module": "director",
+      "label": "推送导演台工作副本",
+      "semanticScope": "官方导演台场景数据。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "director.draft.push": [
+            "draftId",
+            "dryRun",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "director.draft.push",
+      "callableActions": [
+        "director.draft.push"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "director.catalog",
+      "module": "director",
+      "label": "读取导演台目录",
+      "semanticScope": "官方导演台场景数据。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "director.catalog": [
+            "count",
+            "kind",
+            "offset"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "director.catalog",
+      "callableActions": [
+        "director.catalog"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "director.preview",
+      "module": "director_render",
+      "label": "预览导演台",
+      "semanticScope": "官方导演台渲染路径。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": true,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "nodeId",
+          "versionId",
+          "exportOptions"
+        ]
+      },
+      "missingEvidence": [
+        "可用的浏览器渲染执行方式",
+        "服务器WebGL/H.264能力及实际产物验收"
+      ],
+      "semanticConstraints": [
+        "官方路径要求本地浏览器；本轮未启动外部浏览器。",
+        "不能据有 export 命令就宣称无头服务器渲染已可用。"
+      ],
+      "proposedBackend": "official_cli_candidate",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "director.export_image",
+      "module": "director_render",
+      "label": "导出导演台图片",
+      "semanticScope": "官方导演台渲染路径。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": true,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "nodeId",
+          "versionId",
+          "exportOptions"
+        ]
+      },
+      "missingEvidence": [
+        "可用的浏览器渲染执行方式",
+        "服务器WebGL/H.264能力及实际产物验收"
+      ],
+      "semanticConstraints": [
+        "官方路径要求本地浏览器；本轮未启动外部浏览器。",
+        "不能据有 export 命令就宣称无头服务器渲染已可用。"
+      ],
+      "proposedBackend": "official_cli_candidate",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "director.export_video",
+      "module": "director_render",
+      "label": "导出导演台视频",
+      "semanticScope": "官方导演台渲染路径。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": true,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "nodeId",
+          "versionId",
+          "exportOptions"
+        ]
+      },
+      "missingEvidence": [
+        "可用的浏览器渲染执行方式",
+        "服务器WebGL/H.264能力及实际产物验收"
+      ],
+      "semanticConstraints": [
+        "官方路径要求本地浏览器；本轮未启动外部浏览器。",
+        "不能据有 export 命令就宣称无头服务器渲染已可用。"
+      ],
+      "proposedBackend": "official_cli_candidate",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "director.freeze",
+      "module": "director_render",
+      "label": "导演台动画帧定格",
+      "semanticScope": "将动画指定帧定格到摆拍，需本地工作文件及浏览器渲染。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": true,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "nodeId",
+          "versionId",
+          "exportOptions"
+        ]
+      },
+      "missingEvidence": [
+        "可用的浏览器渲染执行方式",
+        "工作文件定格操作及场景状态回读"
+      ],
+      "semanticConstraints": [
+        "官方freeze不是冻结导出文件。不得用错误语义包装。"
+      ],
+      "proposedBackend": "official_cli_candidate",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "director.resume_export",
+      "module": "director_render",
+      "label": "恢复导演台导出",
+      "semanticScope": "官方导演台渲染路径。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": true,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "nodeId",
+          "versionId",
+          "exportOptions"
+        ]
+      },
+      "missingEvidence": [
+        "可用的浏览器渲染执行方式",
+        "服务器WebGL/H.264能力及实际产物验收"
+      ],
+      "semanticConstraints": [
+        "官方路径要求本地浏览器；本轮未启动外部浏览器。",
+        "不能据有 export 命令就宣称无头服务器渲染已可用。"
+      ],
+      "proposedBackend": "official_cli_candidate",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "director.export_fbx",
+      "module": "director",
+      "label": "导出导演台FBX",
+      "semanticScope": "导演台三维场景数据导出。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "director.fbx.export": [
+            "draftId",
+            "dryRun",
+            "motionId",
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "需要当前场景中有效的 motionId；导出文件须独立核对格式、大小与内容。"
+      ],
+      "callableAction": "director.fbx.export",
+      "callableActions": [
+        "director.fbx.export"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.edit.render",
+      "module": "editing",
+      "label": "合成故事板片段",
+      "semanticScope": "工作室片段合成与后期编辑。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "episodeId",
+          "timelineId",
+          "expectedVersion",
+          "settings"
+        ]
+      },
+      "missingEvidence": [
+        "可用项目中的实际交互契约及成功结果",
+        "轨道、时间单位、顺序、版本与输出格式",
+        "渲染计费、终态和结果下载"
+      ],
+      "semanticConstraints": [
+        "界面入口不构成已接通的编辑接口或已验证的渲染产物。"
+      ],
+      "proposedBackend": "web_adapter_pending",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.edit.subtitles",
+      "module": "editing",
+      "label": "编辑字幕轨",
+      "semanticScope": "工作室片段合成与后期编辑。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "episodeId",
+          "timelineId",
+          "expectedVersion",
+          "settings"
+        ]
+      },
+      "missingEvidence": [
+        "可用项目中的实际交互契约及成功结果",
+        "轨道、时间单位、顺序和版本"
+      ],
+      "semanticConstraints": [
+        "界面入口不构成已接通的编辑接口或已验证的渲染产物。"
+      ],
+      "proposedBackend": "web_adapter_pending",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.edit.music",
+      "module": "editing",
+      "label": "编辑配乐轨",
+      "semanticScope": "工作室片段合成与后期编辑。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "episodeId",
+          "timelineId",
+          "expectedVersion",
+          "settings"
+        ]
+      },
+      "missingEvidence": [
+        "可用项目中的实际交互契约及成功结果",
+        "轨道、时间单位、顺序和版本"
+      ],
+      "semanticConstraints": [
+        "界面入口不构成已接通的编辑接口或已验证的渲染产物。"
+      ],
+      "proposedBackend": "web_adapter_pending",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.edit.transitions",
+      "module": "editing",
+      "label": "编辑转场",
+      "semanticScope": "工作室片段合成与后期编辑。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "episodeId",
+          "timelineId",
+          "expectedVersion",
+          "settings"
+        ]
+      },
+      "missingEvidence": [
+        "可用项目中的实际交互契约及成功结果",
+        "轨道、时间单位、顺序和版本"
+      ],
+      "semanticConstraints": [
+        "界面入口不构成已接通的编辑接口或已验证的渲染产物。"
+      ],
+      "proposedBackend": "web_adapter_pending",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.edit.export",
+      "module": "editing",
+      "label": "导出剪辑成片",
+      "semanticScope": "工作室片段合成与后期编辑。",
+      "implemented": false,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "proposal_only_not_executable_schema",
+        "fieldNames": [
+          "projectId",
+          "episodeId",
+          "timelineId",
+          "expectedVersion",
+          "settings"
+        ]
+      },
+      "missingEvidence": [
+        "可用项目中的实际交互契约及成功结果",
+        "轨道、时间单位、顺序、版本与输出格式",
+        "渲染计费、终态和结果下载"
+      ],
+      "semanticConstraints": [
+        "界面入口不构成已接通的编辑接口或已验证的渲染产物。"
+      ],
+      "proposedBackend": "web_adapter_pending",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "not_implemented",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.asset.list",
+      "module": "asset",
+      "label": "列出工作室资产",
+      "semanticScope": "工作室业务资产库。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.asset.list": [
+            "assetTypes",
+            "category",
+            "client",
+            "pageNumber",
+            "pageSize",
+            "tags"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.asset.list",
+      "callableActions": [
+        "studio.asset.list"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.asset.get",
+      "module": "asset",
+      "label": "读取工作室资产",
+      "semanticScope": "以PippitAssetID为身份的工作室资产。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "asset.query": [
+            "assetIds",
+            "client",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "asset.query",
+      "callableActions": [
+        "asset.query"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.character_entity.list",
+      "module": "asset",
+      "label": "列出工作室角色实体",
+      "semanticScope": "工作室角色实体对象。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.character_entity.list": [
+            "bizType",
+            "client",
+            "createType",
+            "cursor",
+            "isTest",
+            "name",
+            "pageSize",
+            "scope"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.character_entity.list",
+      "callableActions": [
+        "studio.character_entity.list"
+      ],
+      "backend": "fixed-jimeng-web",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.asset.share_get",
+      "module": "asset",
+      "label": "读取分享资产",
+      "semanticScope": "按ArtifactID读取ShareImage图片预览；非通用分享ID解析，不支持视频分享或新建分享。",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.asset.share_get": [
+            "artifactId",
+            "client"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "通用分享ID/视频等其他资产分享读取",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "按ArtifactID读取ShareImage图片预览；非通用分享ID解析，不支持视频分享或新建分享。",
+        "写入结果须实际回读；接口完成不等于媒体生成。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "studio.asset.share_get"
+      ],
+      "backend": "authenticated-web-fixed-operation",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "resource.upload",
+      "module": "asset",
+      "label": "上传并登记资源",
+      "semanticScope": "官方画布资源。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "resource.upload": [
+            "contentBase64",
+            "dryRun",
+            "fileExtension",
+            "importKind",
+            "mediaType",
+            "name",
+            "projectId",
+            "sha256",
+            "uploadId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "封装支持受管上传；当前真实传输验收仅16px PNG，音频/视频及大文件分块未实跑。"
+      ],
+      "callableAction": "resource.upload",
+      "callableActions": [
+        "resource.upload"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "resource.get",
+      "module": "asset",
+      "label": "读取资源状态",
+      "semanticScope": "官方画布资源。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "resource.read": [
+            "projectId",
+            "resourceId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "resource.read",
+      "callableActions": [
+        "resource.read"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "relatedExistingBridgeAction": "resource.read",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "resource.download_image",
+      "module": "asset",
+      "label": "下载成功图片",
+      "semanticScope": "官方画布资源。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "resource.download": [
+            "dryRun",
+            "projectId",
+            "resourceId"
+          ],
+          "resource.artifact.read": [
+            "artifactId",
+            "length",
+            "offset",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "只下载官方成功图片到受管artifact并分块读取；服务可能重编码，不能要求原文件字节一致。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "resource.download",
+        "resource.artifact.read"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "resource.download_video",
+      "module": "asset",
+      "label": "下载video素材",
+      "semanticScope": "将成功素材交付为可下载文件。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "resource.download": [
+            "dryRun",
+            "projectId",
+            "resourceId"
+          ],
+          "resource.artifact.read": [
+            "artifactId",
+            "length",
+            "offset",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "下载已成功video资源到受管MP4并分块读取；精确匹配vid及白名单HTTPS下载源，不接受任意URL。实时视频路径验收单列。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "resource.download",
+        "resource.artifact.read"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "resource.download_audio",
+      "module": "asset",
+      "label": "下载audio素材",
+      "semanticScope": "既有成功音频资源按精确vid下载MP3、哈希校验并受管读取；不生成或转码，不泛化其他格式。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "resource.download": [
+            "dryRun",
+            "projectId",
+            "resourceId"
+          ],
+          "resource.artifact.read": [
+            "artifactId",
+            "length",
+            "offset",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "其他音频格式及更多资源来源",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "既有成功音频资源按精确vid下载MP3、哈希校验并受管读取；不生成或转码，不泛化其他格式。"
+      ],
+      "callableAction": null,
+      "callableActions": [
+        "resource.download",
+        "resource.artifact.read"
+      ],
+      "backend": "official-resource-download",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "generation.quote",
+      "module": "jobs",
+      "label": "查询生成报价",
+      "semanticScope": "官方生成任务、价格和恢复。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "node.quote": [
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "node.quote",
+      "callableActions": [
+        "node.quote"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "relatedExistingBridgeAction": "node.quote",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "generation.confirm",
+      "module": "jobs",
+      "label": "确认积分上限",
+      "semanticScope": "官方生成任务、价格和恢复。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "node.confirm": [
+            "creditCeiling",
+            "dryRun",
+            "nodeId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "node.confirm",
+      "callableActions": [
+        "node.confirm"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "generation.status",
+      "module": "jobs",
+      "label": "查询操作状态",
+      "semanticScope": "官方生成任务、价格和恢复。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "operation.status": [
+            "projectId",
+            "submitId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "operation.status",
+      "callableActions": [
+        "operation.status"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "relatedExistingBridgeAction": "operation.status",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "generation.wait",
+      "module": "jobs",
+      "label": "等待操作终态",
+      "semanticScope": "官方生成任务、价格和恢复。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "operation.wait": [
+            "intervalSeconds",
+            "projectId",
+            "submitId",
+            "timeoutSeconds"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "operation.wait",
+      "callableActions": [
+        "operation.wait"
+      ],
+      "backend": "official-dreamina-canvas",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.project.create_canvas",
+      "module": "project",
+      "label": "创建短剧画布壳",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.project.create_canvas": [
+            "dryRun",
+            "projectType",
+            "title"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "该固定action尚未真实执行成功与结果回读验收。",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "Creates a project/canvas shell only. A NOVEL canvas requires studio.project.initialize and subsequent readback before it is a usable short-drama workspace."
+      ],
+      "callableAction": "studio.project.create_canvas",
+      "callableActions": [
+        "studio.project.create_canvas"
+      ],
+      "backend": "fixed-jimeng-web",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.project.initialize",
+      "module": "project",
+      "label": "初始化短剧会话与overview",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.project.initialize": [
+            "canvasAssetId",
+            "consumerUid",
+            "dryRun",
+            "projectId",
+            "spaceId",
+            "workspaceId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "Observed empty NOVEL canvas initialization only. Fixed agent and biz/x_data_novel_canvas_independent_entry subtype; creates the missing conversation/overview. Deterministic job-derived identities aid inspection, but upstream idempotency is unverified; never retry uncertain submissions automatically."
+      ],
+      "callableAction": "studio.project.initialize",
+      "callableActions": [
+        "studio.project.initialize"
+      ],
+      "backend": "fixed-jimeng-web",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.project.update",
+      "module": "project",
+      "label": "修改项目元信息",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.project.update": [
+            "coverAssetId",
+            "dryRun",
+            "isCanvasUserOperated",
+            "projectId",
+            "title"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "该固定action尚未真实执行成功与结果回读验收。",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "Metadata fields only; unknown project status enums and deletion are not exposed"
+      ],
+      "callableAction": "studio.project.update",
+      "callableActions": [
+        "studio.project.update"
+      ],
+      "backend": "fixed-jimeng-web",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.script.resolve",
+      "module": "script",
+      "label": "只读定位剧本资产",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.script.resolve": [
+            "overviewAssetId",
+            "threadId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "该固定action尚未真实执行成功与结果回读验收。",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "Always sends only_read=true; returns script asset identity, not the script content"
+      ],
+      "callableAction": "studio.script.resolve",
+      "callableActions": [
+        "studio.script.resolve"
+      ],
+      "backend": "fixed-jimeng-web",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.script.characters.update",
+      "module": "script",
+      "label": "修改剧本人设列表",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.script.characters.update": [
+            "artifactId",
+            "dryRun",
+            "modify",
+            "uid",
+            "workspaceId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "该固定action尚未真实执行成功与结果回读验收。",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "This upstream modify object only contains character_list; it is not generic script text saving"
+      ],
+      "callableAction": "studio.script.characters.update",
+      "callableActions": [
+        "studio.script.characters.update"
+      ],
+      "backend": "fixed-jimeng-web",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.storyboard.read",
+      "module": "storyboard",
+      "label": "读取真实故事板资产",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.storyboard.read": [
+            "client",
+            "projectId",
+            "storyboardAssetId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "Reads the specified real asset via asset.query; TextInfo.content is preserved verbatim except secret echoes"
+      ],
+      "callableAction": "studio.storyboard.read",
+      "callableActions": [
+        "studio.storyboard.read"
+      ],
+      "backend": "fixed-jimeng-web",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.storyboard.save",
+      "module": "storyboard",
+      "label": "保存V21故事板结构",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.storyboard.save": [
+            "artifactId",
+            "dryRun",
+            "overviewAssetId",
+            "saveMode",
+            "storyboard",
+            "storyboardAssetId",
+            "uid",
+            "workspaceId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "该固定action尚未真实执行成功与结果回读验收。",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "V21 structure only. saveMode has no invented default; callers must use an observed value if needed"
+      ],
+      "callableAction": "studio.storyboard.save",
+      "callableActions": [
+        "studio.storyboard.save"
+      ],
+      "backend": "fixed-jimeng-web",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.storyboard.modify",
+      "module": "storyboard",
+      "label": "修改V21故事板结构",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.storyboard.modify": [
+            "artifactId",
+            "dryRun",
+            "operations",
+            "storyboardAssetId",
+            "uid",
+            "workspaceId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "该固定action尚未真实执行成功与结果回读验收。",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "Typed operation structures are validated; OpType numeric meanings are not inferred"
+      ],
+      "callableAction": "studio.storyboard.modify",
+      "callableActions": [
+        "studio.storyboard.modify"
+      ],
+      "backend": "fixed-jimeng-web",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.storyboard.description.update",
+      "module": "storyboard",
+      "label": "修改当前故事板镜头描述并回读",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "write",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.storyboard.description.update": [
+            "canvasAssetId",
+            "description",
+            "dryRun",
+            "expectedVersion",
+            "shotAssetId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "Replaces only the existing storyboard-shot generation.prompt with the exact description string (including any duration markers). Reads and checks asset type/version first, preserves references and other fields, then verifies persisted text. Does not generate media or expose arbitrary JSON patch paths."
+      ],
+      "callableAction": "studio.storyboard.description.update",
+      "callableActions": [
+        "studio.storyboard.description.update"
+      ],
+      "backend": "fixed-jimeng-web",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.canvas.list",
+      "module": "assets",
+      "label": "列出工作室画布资产",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.canvas.list": [
+            "client",
+            "pageNumber",
+            "pageSize"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "该固定action尚未真实执行成功与结果回读验收。",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.canvas.list",
+      "callableActions": [
+        "studio.canvas.list"
+      ],
+      "backend": "fixed-jimeng-web",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "studio.thread.read",
+      "module": "project",
+      "label": "读取会话与运行记录",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "studio.thread.read": [
+            "endMessageId",
+            "endRunId",
+            "limit",
+            "messageId",
+            "needFailureDetails",
+            "runId",
+            "scopes",
+            "teamId",
+            "threadId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "studio.thread.read",
+      "callableActions": [
+        "studio.thread.read"
+      ],
+      "backend": "fixed-jimeng-web",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "asset.artifact.query",
+      "module": "assets",
+      "label": "按artifact/thread/run查询资产",
+      "implemented": true,
+      "webAdapterImplemented": true,
+      "effect": "read",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "asset.artifact.query": [
+            "artifactIds",
+            "client",
+            "runId",
+            "threadId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "asset.artifact.query",
+      "callableActions": [
+        "asset.artifact.query"
+      ],
+      "backend": "fixed-jimeng-web",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "canvas.video.sample",
+      "module": "video",
+      "label": "生成官方样片",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "generation",
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "video.sample": [
+            "creditCeiling",
+            "dryRun",
+            "duration",
+            "mode",
+            "model",
+            "projectId",
+            "prompt",
+            "ratio",
+            "refs",
+            "resolution",
+            "title",
+            "workflow"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [],
+      "callableAction": "video.sample",
+      "callableActions": [
+        "video.sample"
+      ],
+      "backend": "official-dreamina-canvas",
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "plugin.session.create",
+      "module": "official_plugin",
+      "label": "创建官方插件会话",
+      "semanticScope": "创建生成CLI会话，与画布project和飞书对话分开。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "plugin.session.create": [
+            "dryRun",
+            "name"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "创建使用者当前官方 CLI 账号中的会话；默认 dry-run 不调用上游。"
+      ],
+      "callableAction": "plugin.session.create",
+      "callableActions": [
+        "plugin.session.create"
+      ],
+      "backend": "official-dreamina-cli",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "plugin.session.list",
+      "module": "official_plugin",
+      "label": "列出官方插件会话",
+      "semanticScope": "列出官方生成CLI当前账号会话。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "plugin.session.list": [
+            "limit"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "真实模块读取及桥接HTTP读取成功；limit上限100，不代表所有历史已枚举。"
+      ],
+      "callableAction": "plugin.session.list",
+      "callableActions": [
+        "plugin.session.list"
+      ],
+      "backend": "official-dreamina-cli",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "plugin.session.search",
+      "module": "official_plugin",
+      "label": "搜索官方插件会话",
+      "semanticScope": "按名称查询官方生成CLI会话。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "plugin.session.search": [
+            "name"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "大小写敏感子串匹配，搜索范围仅前100个会话；空匹配不是账号没有其他会话的证明。"
+      ],
+      "callableAction": "plugin.session.search",
+      "callableActions": [
+        "plugin.session.search"
+      ],
+      "backend": "official-dreamina-cli",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "plugin.session.rename",
+      "module": "official_plugin",
+      "label": "重命名官方插件会话",
+      "semanticScope": "修改指定非默认插件会话名称。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "plugin.session.rename": [
+            "dryRun",
+            "name",
+            "sessionId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "只对临时验收会话直接CLI改名并搜索确认；不声明所有历史会话或HTTP写入均验收。"
+      ],
+      "callableAction": "plugin.session.rename",
+      "callableActions": [
+        "plugin.session.rename"
+      ],
+      "backend": "official-dreamina-cli",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "plugin.session.delete",
+      "module": "official_plugin",
+      "label": "软删除官方插件会话",
+      "semanticScope": "软删除非默认生成CLI会话。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "plugin.session.delete": [
+            "dryRun",
+            "sessionId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "历史归入默认 session 0；默认会话不能删除。仅删除调用者明确指定的会话。"
+      ],
+      "callableAction": "plugin.session.delete",
+      "callableActions": [
+        "plugin.session.delete"
+      ],
+      "backend": "official-dreamina-cli",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "plugin.task.list",
+      "module": "official_plugin",
+      "label": "查询官方插件任务历史",
+      "semanticScope": "按状态/类型/submitId及分页读取生成CLI本地任务历史。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "plugin.task.list": [
+            "limit",
+            "offset",
+            "status",
+            "submitId",
+            "taskType"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "只读查询使用者当前官方 CLI 账号的任务；不同过滤组合按实际响应验证。"
+      ],
+      "callableAction": "plugin.task.list",
+      "callableActions": [
+        "plugin.task.list"
+      ],
+      "backend": "official-dreamina-cli",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "plugin.task.read",
+      "module": "official_plugin",
+      "label": "查询官方插件任务结果",
+      "semanticScope": "用该官方生成CLI返回的submit_id执行query_result。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "plugin.task.read": [
+            "submitId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "同一插件账号真实任务submit_id及query_result响应/终态验收",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "不得用canvas的submitId替代；当前没有可用既有插件任务，尚未真实调用query_result。"
+      ],
+      "callableAction": "plugin.task.read",
+      "callableActions": [
+        "plugin.task.read"
+      ],
+      "backend": "official-dreamina-cli",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "plugin.video.multiframe",
+      "module": "official_plugin",
+      "label": "官方多关键帧视频生成",
+      "semanticScope": "以2–20张受管图片生成普通固定模型多关键帧视频。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "write",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "plugin.video.multiframe": [
+            "artifactIds",
+            "dryRun",
+            "duration",
+            "projectId",
+            "prompt",
+            "resolution",
+            "sessionId",
+            "transitionDurations",
+            "transitionPrompts",
+            "workflow"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "一次明确授权的真实多帧生成提交、原submit_id结果查询和成功媒体终态",
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "需要明确配置 unlimited 积分政策；若启用 sample_first，还需单次普通模式授权声明。无数值报价/ceiling 保证。"
+      ],
+      "callableAction": "plugin.video.multiframe",
+      "callableActions": [
+        "plugin.video.multiframe"
+      ],
+      "backend": "official-dreamina-cli",
+      "proposedBackend": null,
+      "coverage": "partial",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "subject.import.inspect",
+      "module": "personal_subject",
+      "label": "核验原主体导入结果",
+      "semanticScope": "按原operationId只读核验其计划节点、图声资源和描述哈希。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "subject.import.inspect": [
+            "operationId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "只读核对原操作、目标节点、资源绑定及描述；不写 journal、不上传、不新建、不生成。"
+      ],
+      "callableAction": "subject.import.inspect",
+      "callableActions": [
+        "subject.import.inspect"
+      ],
+      "backend": "fixed-subject-import",
+      "proposedBackend": null,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    },
+    {
+      "operation": "subject.import.reconcile",
+      "module": "personal_subject",
+      "label": "登记原主体导入核验结果",
+      "semanticScope": "核验原导入后追加本地恢复记录。",
+      "implemented": true,
+      "webAdapterImplemented": false,
+      "effect": "read",
+      "browserRuntimeRequired": false,
+      "inputContract": {
+        "status": "implemented_closed_schema",
+        "schemaSource": "openapi.json",
+        "fieldsByAction": {
+          "subject.import.reconcile": [
+            "operationId",
+            "projectId"
+          ]
+        }
+      },
+      "missingEvidence": [
+        "使用者账号的登录、权限及该操作结果验证"
+      ],
+      "semanticConstraints": [
+        "只读上游，仅追加本地journal；原result/state/phase及原job的partial回执保留，新核验job返回succeeded。",
+        "同一reconcile job重放自己的核验记录，不重新执行导入；不能以核验成功推断生成后的声画质量。"
+      ],
+      "callableAction": "subject.import.reconcile",
+      "callableActions": [
+        "subject.import.reconcile"
+      ],
+      "backend": "fixed-subject-import",
+      "proposedBackend": null,
+      "mutatesLocalState": true,
+      "coverage": "mapped_fixed_operation",
+      "available": false,
+      "serverExecutionVerified": false,
+      "browserReadVerified": false,
+      "verifiedActions": {},
+      "evidence": [],
+      "evidenceLevel": "adapter_implemented_execution_pending",
+      "verificationScope": "No user execution evidence is bundled. Validate the exact operation with your own account.",
+      "availabilitySemantics": "Implementation coverage only. Current CLI/session availability and write/credit policy are reported by capabilities; operation labels are not action aliases."
+    }
+  ],
+  "allCatalogFeaturesImplemented": false,
+  "callableActionInventory": [
+    "account.read",
+    "account.refresh",
+    "account.status",
+    "asset.artifact.query",
+    "asset.query",
+    "audio.create",
+    "audio.generate",
+    "audio.update",
+    "canvas.create",
+    "canvas.current",
+    "canvas.list",
+    "canvas.select",
+    "director.apply",
+    "director.artifact.read",
+    "director.catalog",
+    "director.create",
+    "director.draft.apply",
+    "director.draft.get",
+    "director.draft.pull",
+    "director.draft.push",
+    "director.fbx.export",
+    "director.get",
+    "director.operation.get",
+    "director.resume",
+    "element.create",
+    "element.update",
+    "image.create",
+    "image.cutout",
+    "image.generate",
+    "image.update",
+    "image.upscale",
+    "model.inspect",
+    "model.list",
+    "node.confirm",
+    "node.list",
+    "node.quote",
+    "node.read",
+    "node.run",
+    "operation.status",
+    "operation.wait",
+    "personal.subject.create",
+    "personal.subject.delete",
+    "personal.subject.update",
+    "personal.voice.archive",
+    "personal.voice.create",
+    "personal.voice.update",
+    "plugin.session.create",
+    "plugin.session.delete",
+    "plugin.session.list",
+    "plugin.session.rename",
+    "plugin.session.search",
+    "plugin.task.list",
+    "plugin.task.read",
+    "plugin.video.multiframe",
+    "public_character.expression_config",
+    "public_character.face_config",
+    "public_character.read",
+    "public_character.search",
+    "resource.artifact.read",
+    "resource.download",
+    "resource.operation.get",
+    "resource.read",
+    "resource.upload",
+    "resource.upload.inspect",
+    "resource.upload.stage",
+    "space.current",
+    "space.select",
+    "studio.asset.list",
+    "studio.asset.share_get",
+    "studio.canvas.list",
+    "studio.character.read",
+    "studio.character.resolve",
+    "studio.character_entity.list",
+    "studio.character_entity.read",
+    "studio.episode.create",
+    "studio.episode.delete",
+    "studio.episode.update",
+    "studio.episode.videos.update",
+    "studio.images.generate",
+    "studio.project.clone",
+    "studio.project.create",
+    "studio.project.create_canvas",
+    "studio.project.initialize",
+    "studio.project.list",
+    "studio.project.overview.read",
+    "studio.project.update",
+    "studio.role.audio.generate",
+    "studio.script.characters.update",
+    "studio.script.read",
+    "studio.script.resolve",
+    "studio.script.save",
+    "studio.script.snapshot.restore",
+    "studio.settings.update",
+    "studio.storyboard.create",
+    "studio.storyboard.description.update",
+    "studio.storyboard.modify",
+    "studio.storyboard.read",
+    "studio.storyboard.save",
+    "studio.style.list",
+    "studio.thread.read",
+    "studio.video.erase_subtitle",
+    "subject.get",
+    "subject.import.inspect",
+    "subject.import.reconcile",
+    "subject.import_element",
+    "subject.list",
+    "team.list",
+    "text.create",
+    "text.update",
+    "timeline.create",
+    "timeline.update",
+    "video.create",
+    "video.extend",
+    "video.extend.status",
+    "video.generate",
+    "video.interpolate",
+    "video.promote",
+    "video.regenerate",
+    "video.sample",
+    "video.update",
+    "video.upscale",
+    "voice.list"
+  ],
+  "callableActionCount": 122,
+  "coverageSummary": {
+    "catalogFeatures": 124,
+    "mappedFeatures": 108,
+    "unimplementedFeatures": 16,
+    "featuresWithAllMappedActionsExecutionVerified": 0,
+    "caveat": "Feature mappings and callable actions are not one-to-one; mapped does not mean executed or verified for your account."
+  },
+  "acceptanceRegistry": {
+    "source": "acceptance_records.json",
+    "verifiedRecordCount": 0,
+    "integrity": "sha256-pinned-reviewed-evidence"
+  }
+}
